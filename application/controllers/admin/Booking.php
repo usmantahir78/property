@@ -9,6 +9,11 @@ class Booking extends CI_Controller {
         $this->load->model('booking_model');
     }
 
+    public function dwd()
+	{
+		echo "Dawood test";
+	}
+
     public function index() {
         $data = array();
 
