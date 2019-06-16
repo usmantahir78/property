@@ -17,6 +17,7 @@
 		color: black;
 	}
 </style>
+<title>Customer Booking Details</title>
 <h3 align="center">Customer Booking Details</h3>
 <hr>
 <h5>Personal Details</h5>

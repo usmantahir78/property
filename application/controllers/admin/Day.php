@@ -7,6 +7,7 @@ class Day extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('day_model');
+        $this->load->library('pdf');
     }
 
     public function index() {
@@ -57,6 +58,27 @@ class Day extends CI_Controller {
         $data['content'] = "admin/dayopenclose/daydetails";
         $this->load->view(ADMIN_BODY, $data);
     }
+    public function dayDetailsPdf()
+	{
+		if($this->uri->segment(4)!=""){
+			$day_id = $this->uri->segment(4);
+		}else if($this->session->userdata('day_id')){
+			$day_id = $this->session->userdata('day_id');
+		}
+		if($day_id==""){
+			redirect(base_url().'admin/day/listing');
+		}
+		$data = array();
+		$day = $this->day_model->getDay($day_id);
+		$daydetails = $this->day_model->getDayDetails($day_id);
+		$data['title'] = "Day Details Pdf";
+		$data['day_id'] = $day_id;
+		$data['day'] = $day;
+		$data['daydetails'] = $daydetails;
+		$this->pdf->loadHtml($this->load->view('dailyReport',$data, TRUE));
+		$this->pdf->render();
+		$this->pdf->stream("Day_details_".$day_id.".pdf", array("Attachment"=>0));
+	}
     public function close() {
          $data = array();
         $post_data['day_id'] = $this->session->userdata('day_id');
@@ -93,7 +115,7 @@ class Day extends CI_Controller {
                     'day_closedate' => date('d-m-Y',strtotime($row['day_closedate'])),
                     'day_status' => $row['day_status'],
                     
-                    'actions' => '<a class="edit" href="'.base_url().'admin/day/daydetails/' . $row['day_id'] .'">View</a>'
+                    'actions' => '<a class="edit" href="'.base_url().'admin/day/daydetails/' . $row['day_id'] .'">View</a><span> | </span><a class="edit" href="'.base_url().'admin/day/dayDetailsPdf/' . $row['day_id'] .'"><i class="fa fa-download"></i></a>'
                 );
             }
             $data[] = array(

@@ -60,19 +60,42 @@ class Property extends CI_Controller {
         }
     }
 
+    public function editProperty()
+	{
+		$data = array();
+		$data['title'] = "Edit Property";
+		$property_id = $this->uri->segment(4);
+		if($property_id){
+			$property = $this->common->fetch_row(FALSE,'property', array('property_id'=>$property_id));
+
+			$data['property'] = $property;
+			//            echo "<pre>";
+//            print_r($data['installments']); exit;
+		}else{
+			redirect(base_url().'admin/property');
+		}
+
+		$data['content'] = "admin/property/edit";
+		$this->load->view(ADMIN_BODY, $data);
+	}
     public function update() {
-        $data = array();
-        $post_data['first_name'] = $this->input->post('first_name');
-        $post_data['last_name'] = $this->input->post('last_name');
-        $post_data['user_email'] = $this->input->post('user_email');
-        $post_data['role_id'] = $this->input->post('role_id');
-        $post_data['status'] = $this->input->post('status');
-        $where = array('user_id' => $this->input->post('id'));
-        if ($this->common->update('users', $post_data, $where)) {
-            echo 'saved';
-        } else {
-            echo 'not_saved';
-        }
+		$data = array();
+		if ($this->input->post('submit')) {
+
+			$property['property_number'] = $this->session->post('plot_no');
+			$property['property_in_marla'] = $this->input->post('property_in_marla');
+			$property['property_in_sarsahi'] = $this->input->post('property_in_sarsahi');
+			$property['property_per_marla'] = $this->input->post('property_per_marla');
+			$property['property_per_marla'] = $this->input->post('property_per_marla');
+			$property['property_per_marla'] = $this->input->post('property_per_marla');
+			$property['property_total_price'] = $this->input->post('property_total_price');
+			$property['property_status'] = $this->input->post('property_status');
+			$where = array('property_id' => $this->input->post('id'));
+			$property_id = $this->common->update('property', $property,$where);
+			if ($property_id) {
+				redirect(base_url().'admin/property/');
+			}
+		}
     }
 
     public function get_data() {
@@ -91,7 +114,7 @@ class Property extends CI_Controller {
                     'property_date_created' => date('d-m-Y',strtotime($row['property_date_created'])),
                     'property_status' => $row['property_status'],
                     
-                    'actions' => '<i class="fa fa-eye"></i> '
+                    'actions' => '<a class="edit" href="'.base_url().'admin/property/editProperty/' . $row['property_id'] .'"><i class="fa fa-edit"></i></a> '
                 );
             }
             $data[] = array(
