@@ -152,39 +152,7 @@
         </div>
     </div>
 </div>
-<div id="edit-modal-form" class="modal fade" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Edit User</h3>
-                        <div class="hide alert alert-danger alert-dismissable" id="edit_error_msg">
-                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-                            <b>Alert! </b><span></span>
-                        </div>
-                        <form role="form">
-                            <div class="form-group">
-                                <label>Password</label> 
-                                <input type="password" placeholder="Enter Password" class="form-control" name="password" id="password" required="">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm Password</label> 
-                                <input type="password" placeholder="Enter Confirm Password" class="form-control" name="cpassword" id="cpassword" required="">
-                            </div>
-                            
-                            <div>
-                                <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="button" onclick="updatePassword();">
-                                    <strong>Update</strong>
-                                </button>
-                                <img id="edit_loader" align="center" class="hide pull-right" src="<?php echo base_url() . LOADER; ?>">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div id="delete-modal-form" class="modal fade" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -298,7 +266,15 @@
         var vender_identity = $('#vender_identity').val();
         var address = $('#address').val();
         var status = $('#status').val();
-
+        if (isRequired('fname', 'First name is required', true)) {
+            return false;
+        } else if (isRequired('lname', 'Last name is required', true)) {
+            return false;
+        } else if (isRequired('address', 'Address is required', true)) {
+            return false;
+        } else if (isRequired('vender_identity', 'ID is required', true)) {
+            return false;
+        }else {
             $("#loader").show();
             $.post("<?php echo base_url(); ?>admin/vender/save",
                     {
@@ -324,8 +300,7 @@
                             return false;
                         }
                     });
-
-        
+        }
     }
     
     function getRecord(id){
@@ -360,8 +335,16 @@
         var address     = $('#edit_address').val();
         var status      = $('#edit_status').val();
         var id          = $('#edit_vender_id').val();
-
-            $("#edit_loader").show();
+        if (isRequired('edit_fname', 'First name is required', true)) {
+            return false;
+        } else if (isRequired('edit_lname', 'Last name is required', true)) {
+            return false;
+        } else if (isRequired('edit_address', 'Address is required', true)) {
+            return false;
+        } else if (isRequired('edit_vender_identity', 'ID is required', true)) {
+            return false;
+        }else {
+           $("#edit_loader").show();
             $.post("<?php echo base_url(); ?>admin/vender/update",
                     {
                         id:id,
@@ -386,44 +369,14 @@
                             $("#edit_loader").hide();
                             return false;
                         }
-                    });
-
-        
+                    }); 
+        }
+           
     }
     function setId(id){
         $('#record_id').val(id);
     }
-    function updatePassword() {
-        var password       = $('#edit_password').val();
-        var cpassword       = $('#edit_cpassword').val();
-            $(".loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/update",
-                    {
-                        id:id,
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        role_id: role,
-                        status: status
-                    }
-            )
-                    .done(function (data) {
-                        $("#edit_password_error_msg").hide();
-                        if (data == 'saved') {
-                                 successtoster('Password Updated!','Password updated successfully');
-                                $("#.loader").hide();
-                                $('#password-modal-form').modal('toggle');
-                        } else {
-                                errortoster('Error!','Error updating password try later!');
-                                $("#.loader").hide();
-                                $('#password-modal-form').modal('toggle');
-                                $("#.loader").hide();
-                            return false;
-                        }
-                    });
-
-        
-    }
+    
     function deleteVender(){
         var id       = $('#record_id').val();
             $(".loader").show();
@@ -433,6 +386,9 @@
                             errortoster('Vender Deleted!','Vender deleted successfully!');
                             $('#delete-modal-form').modal('toggle');
                                $("#" + gridID).jqxGrid({source: getAdapter()});
+                        } else if(data == 'used'){
+                            errortoster('Can`t Delete!','Vender in use!');
+                            $('#delete-modal-form').modal('toggle');
                         } else {
                             errortoster('Error!','Error deleting vender!');
                             $('#delete-modal-form').modal('toggle');

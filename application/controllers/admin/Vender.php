@@ -35,10 +35,16 @@ class Vender extends CI_Controller {
     public function delete() {
         $data = array();
         $where = array('vender_id' => $this->input->post('id'));
-        if ($this->common->delete('venders', $where)) {
-            echo 'deleted';
-        } else {
-            echo 'not_found';
+        $vender = $this->common->fetch_row('vender_id','payments',$where);
+        if($vender){
+            echo 'used';
+        }else{
+            $where = array('vender_id' => $this->input->post('id'));
+            if ($this->common->delete('venders', $where)) {
+                echo 'deleted';
+            } else {
+                echo 'not_found';
+            }
         }
     }
 

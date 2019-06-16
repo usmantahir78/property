@@ -45,7 +45,7 @@ class Day extends CI_Controller {
             $day_id = $this->session->userdata('day_id');
         }
         if($day_id==""){
-            redirect(base_url().'admin/day/listing');
+            redirect(base_url().'admin/day/open');
         }
         $data = array();
         $day = $this->day_model->getDay($day_id);
@@ -87,8 +87,8 @@ class Day extends CI_Controller {
                 $returnData[] = array(
                     'day_id' => $row['day_id'],
                     'cashier_name' => $cashier_name->first_name.' '.$cashier_name->last_name,
-                    'day_open_amount' => $row['day_open_amount'],
-                    'day_close_amount' => $row['day_close_amount'],
+                    'day_open_amount' => number_format($row['day_open_amount'],2),
+                    'day_close_amount' => number_format($row['day_close_amount'],2),
                     'day_opendate' => date('d-m-Y',strtotime($row['day_opendate'])),
                     'day_closedate' => date('d-m-Y',strtotime($row['day_closedate'])),
                     'day_status' => $row['day_status'],

@@ -90,9 +90,10 @@
                 {text: 'ID', datafield: 'day_id', filtertype: 'textbox', filtercondition: 'contains', cellsalign: 'center', width: 60},
                 {text: 'Cashier Name', datafield: 'cashier_name', filterable:false},
                 {text: 'Open Date', datafield: 'day_opendate', filtertype: 'textbox', filtercondition: 'contains'},
-                {text: 'Open Amount', datafield: 'day_open_amount',  filtertype: 'textbox', filtercondition: 'contains'},
                 {text: 'Close Date', datafield: 'day_closedate', filtertype: 'textbox', filtercondition: 'contains'},
-                {text: 'Close Amount', datafield: 'day_close_amount', filtertype: 'textbox', filtercondition: 'contains',width:'20%'},
+                {text: 'Open Amount', datafield: 'day_open_amount',  filtertype: 'textbox',cellsalign: 'right', filtercondition: 'contains'},
+                
+                {text: 'Close Amount', datafield: 'day_close_amount', filtertype: 'textbox',cellsalign: 'right', filtercondition: 'contains',width:'20%'},
                 {text: 'Status', datafield: 'day_status', filtertype: 'textbox', cellsalign: 'center',filtercondition: 'contains',width: 100},
                 {text: 'Actions', datafield: 'actions', cellsalign: 'center',filterable:false,width: 100}
             ]

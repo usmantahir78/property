@@ -6,7 +6,7 @@
                 <h5>Customers List </h5>
             </div>
             <div class="ibox-content">
-<!--                <a class="btn btn-primary btn-lg pull-right mb-2">Add User</a>-->
+                <a data-toggle="modal" class="btn btn-primary btn-lg pull-right mb-2" href="#modal-form">Add Customer</a>
                 <br />
                 <div class="table-responsive">
                     <div id="jqxgrid"></div>
@@ -22,9 +22,9 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Add User</h3>
+                    <div class="col-sm-12"><h3 class="m-t-none m-b">Add Customer</h3>
                         <div class="hide alert alert-danger alert-dismissable" id="error_msg">
-                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
                             <b>Alert! </b><span></span>
                         </div>
                         <form role="form">
@@ -42,28 +42,27 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Email</label> 
-                                <input type="email" placeholder="Enter Email" class="form-control" name="email" id="email" required="">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Phone</label> 
+                                        <input type="text" placeholder="Enter Phone" class="form-control" id="phone" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email</label> 
+                                        <input type="text" placeholder="Enter Email" class="form-control" id="email">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label>Password</label> 
-                                <input type="password" placeholder="Enter Password" class="form-control" name="password" id="password" required="">
+                                <label>ID</label> 
+                                <input type="text" placeholder="Enter ID" class="form-control" name="identity" id="identity">
                             </div>
                             <div class="form-group">
-                                <label>Confirm Password</label> 
-                                <input type="password" placeholder="Enter Confirm Password" class="form-control" name="cpassword" id="cpassword" required="">
-                            </div>
-                            <div class="form-group">
-                                <label>Role</label> 
-                                <select class="form-control m-b" name="role" id="role" required="">
-                                    <?php if ($roles) {
-                                        foreach ($roles as $role) { ?>
-                                            <option value="<?php echo $role->role_id; ?>"><?php echo $role->role_name; ?></option>
-    <?php }
-} ?>
-                                </select>
+                                <label>Address</label> 
+                                <input type="text" placeholder="Enter Address" class="form-control" name="address" id="address">
                             </div>
                             <div class="form-group">
                                 <label>Status</label> 
@@ -90,9 +89,9 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Edit User</h3>
+                    <div class="col-sm-12"><h3 class="m-t-none m-b">Edit Customer</h3>
                         <div class="hide alert alert-danger alert-dismissable" id="edit_error_msg">
-                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
                             <b>Alert! </b><span></span>
                         </div>
                         <form role="form">
@@ -110,20 +109,27 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Email</label> 
-                                <input type="email" placeholder="Enter Email" class="form-control" name="email" id="edit_email" required="">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Phone</label> 
+                                        <input type="text" placeholder="Enter Phone" class="form-control" id="edit_phone">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email</label> 
+                                        <input type="text" placeholder="Enter Email" class="form-control" id="edit_email">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label>Role</label> 
-                                <select class="form-control m-b" name="role" id="edit_role" required="">
-                                    <?php if ($roles) {
-                                        foreach ($roles as $role) { ?>
-                                            <option value="<?php echo $role->role_id; ?>"><?php echo $role->role_name; ?></option>
-    <?php }
-} ?>
-                                </select>
+                                <label>ID</label> 
+                                <input type="text" placeholder="Enter ID" class="form-control" name="customer_identity" id="edit_identity">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label> 
+                                <input type="text" placeholder="Enter Address" class="form-control" name="address" id="edit_address">
                             </div>
                             <div class="form-group">
                                 <label>Status</label> 
@@ -132,42 +138,9 @@
                                     <option value="Inactive">Inactive</option>
                                 </select>
                             </div>
-                            <input type="hidden" id="edit_user_id" value="0">
+                            <input type="hidden" id="edit_customer_id" value="0">
                             <div>
                                 <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="button" onclick="updateForm();">
-                                    <strong>Update</strong>
-                                </button>
-                                <img id="edit_loader" align="center" class="hide pull-right" src="<?php echo base_url() . LOADER; ?>">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="edit-modal-form" class="modal fade" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Edit User</h3>
-                        <div class="hide alert alert-danger alert-dismissable" id="edit_error_msg">
-                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                            <b>Alert! </b><span></span>
-                        </div>
-                        <form role="form">
-                            <div class="form-group">
-                                <label>Password</label> 
-                                <input type="password" placeholder="Enter Password" class="form-control" name="password" id="password" required="">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm Password</label> 
-                                <input type="password" placeholder="Enter Confirm Password" class="form-control" name="cpassword" id="cpassword" required="">
-                            </div>
-                            
-                            <div>
-                                <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="button" onclick="updatePassword();">
                                     <strong>Update</strong>
                                 </button>
                                 <img id="edit_loader" align="center" class="hide pull-right" src="<?php echo base_url() . LOADER; ?>">
@@ -184,14 +157,14 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Delete User</h3>
-                        <h4 class="m-t-none m-b">Are you sure you want to delete user?</h4>
+                    <div class="col-sm-12"><h3 class="m-t-none m-b">Delete Customer</h3>
+                        <h4 class="m-t-none m-b">Are you sure you want to delete customer?</h4>
                         <form role="form">
                             <div class="pull-right">
                                 <button class="btn btn-info m-t-n-xs" type="button" data-dismiss="modal">
                                     <strong>Cancel</strong>
                                 </button>
-                                <button class="btn btn-danger m-t-n-xs" type="button" onclick="deleteUser();">
+                                <button class="btn btn-danger m-t-n-xs" type="button" onclick="deleteCustomer();">
                                     <strong>Delete</strong>
                                 </button>
                                 
@@ -286,60 +259,80 @@
         var fname = $('#fname').val();
         var lname = $('#lname').val();
         var email = $('#email').val();
-        var password = $('#password').val();
-        var cpassword = $('#cpassword').val();
-        var role = $('#role').val();
+        var phone = $('#phone').val();
+        var identity = $('#identity').val();
+        var address = $('#address').val();
         var status = $('#status').val();
-
-        if (password != cpassword) {
-            $("#error_msg span").text('Confirm Password not matched');
-            $("#error_msg").fadeIn(2000);
+        if (isRequired('fname', 'First name is required', true)) {
             return false;
-        } else {
-            $("#loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/save",
-                    {
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        password: password,
-                        role_id: role,
-                        status: status
-                    }
-            )
-                    .done(function (data) {
-                        $("#error_msg").hide();
-                        if (data == 'saved') {
-                            successtoster('User Saved!','User saved successfully');
-                            $("#" + gridID).jqxGrid({source: getAdapter()});
-                            $("#loader").hide();
-                            $('#modal-form').modal('toggle');
-                        } else {
-                            $("#error_msg span").text('Error Saving data try again later!');
-                            $("#loader").hide();
-                            return false;
+        } else if (isRequired('lname', 'Last name is required', true)) {
+            return false;
+        } else if (isRequired('address', 'Address is required', true)) {
+            return false;
+        } else if (isRequired('identity', 'ID is required', true)) {
+            return false;
+        }else {
+            $.post("<?php echo base_url(); ?>admin/customer/checkCustomerId",
+                        {
+                            identity: identity
                         }
-                    });
-
+                )
+                        .done(function (data) {
+                            $("#error_msg").hide();
+                            if (data == 'found') {
+                                $("#error_msg span").text('Customer ID already exist!');
+                                $("#error_msg").fadeIn(2000);
+                                return false;
+                            } else {
+                                $("#loader").show();
+                                    $.post("<?php echo base_url(); ?>admin/customer/save",
+                                            {
+                                                customer_first_name: fname,
+                                                customer_last_name: lname,
+                                                cutomer_email: email,
+                                                customer_phone: phone,
+                                                customer_identity: identity,
+                                                customer_address: address,
+                                                customer_status: status
+                                            }
+                                    )
+                                            .done(function (data) {
+                                                $("#error_msg").hide();
+                                                if (data == 'saved') {
+                                                    successtoster('Customer Saved!','Customer saved successfully');
+                                                    $("#" + gridID).jqxGrid({source: getAdapter()});
+                                                    $("#loader").hide();
+                                                    $('#modal-form').modal('toggle');
+                                                } else {
+                                                    $("#error_msg span").text('Error Saving data try again later!');
+                                                    $("#loader").hide();
+                                                    return false;
+                                                }
+                                            });
+                            }
+                         });
+            
         }
     }
     
     function getRecord(id){
-        $('#edit_user_id').val(id);
-        $.post("<?php echo base_url(); ?>admin/user/getRecord",
+        $('#edit_customer_id').val(id);
+        $.post("<?php echo base_url(); ?>admin/customer/getRecord",
                     {
                         id:id
                     }
             )
                     .done(function (data) {
                         if (data !='not_found') {
-                            $('#edit_fname').val(data.first_name);
-                            $('#edit_lname').val(data.last_name);
-                            $('#edit_email').val(data.user_email);
-                            $('#edit_role').val(data.role_id);
-                            $('#edit_status').val(data.status);
+                            $('#edit_fname').val(data.customer_first_name);
+                            $('#edit_lname').val(data.customer_last_name);
+                            $('#edit_email').val(data.cutomer_email);
+                            $('#edit_phone').val(data.customer_phone);
+                            $('#edit_identity').val(data.customer_identity);
+                            $('#edit_address').val(data.customer_address);
+                            $('#edit_status').val(data.customer_status);
                         } else {
-                            errortoster('Error!','Data not found for this user.');
+                            errortoster('Error!','Data not found for this vender.');
                             $('#modal-form').modal('toggle');
                         }
                     });
@@ -349,81 +342,83 @@
         var fname       = $('#edit_fname').val();
         var lname       = $('#edit_lname').val();
         var email       = $('#edit_email').val();
-        var role        = $('#edit_role').val();
+        var phone       = $('#edit_phone').val();
+        var identity      = $('#edit_identity').val();
+        var address     = $('#edit_address').val();
         var status      = $('#edit_status').val();
-        var id          = $('#edit_user_id').val();
-            $("#edit_loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/update",
-                    {
-                        id:id,
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        role_id: role,
-                        status: status
-                    }
-            )
-                    .done(function (data) {
-                        $("#edit_error_msg").hide();
-                        if (data == 'saved') {
-                            successtoster('User Updated!','User updated successfully');
-                            $("#" + gridID).jqxGrid({source: getAdapter()});
-                            $("#edit_loader").hide();
-                            $('#edit-modal-form').modal('toggle');
-                        } else {
-                            $("#edit_error_msg span").text('Error Updating data try again later!');
-                            $("#edit_loader").hide();
-                            return false;
+        var id          = $('#edit_customer_id').val();
+        if (isRequired('edit_fname', 'First name is required', true)) {
+            return false;
+        } else if (isRequired('edit_lname', 'Last name is required', true)) {
+            return false;
+        } else if (isRequired('edit_address', 'Address is required', true)) {
+            return false;
+        } else if (isRequired('edit_identity', 'ID is required', true)) {
+            return false;
+        }else {
+            $.post("<?php echo base_url(); ?>admin/customer/checkEditCustomerId",
+                        {
+                            identity: identity,
+                            customer_id:id
                         }
-                    });
-
+                )
+                        .done(function (data) {
+                            $("#error_msg").hide();
+                            if (data == 'found') {
+                                $("#edit_error_msg span").text('Customer ID already exist!');
+                                $("#edit_error_msg").fadeIn(2000);
+                                return false;
+                            } else {
+                            $("#edit_loader").show();
+                             $.post("<?php echo base_url(); ?>admin/customer/update",
+                                     {
+                                         id:id,
+                                         customer_first_name: fname,
+                                         customer_last_name: lname,
+                                         cutomer_email: email,
+                                         customer_phone: phone,
+                                         customer_identity: identity,
+                                         customer_address: address,
+                                         customer_status: status
+                                     }
+                             )
+                                     .done(function (data) {
+                                         $("#edit_error_msg").hide();
+                                         if (data == 'saved') {
+                                             successtoster('User Updated!','User updated successfully');
+                                             $("#" + gridID).jqxGrid({source: getAdapter()});
+                                             $("#edit_loader").hide();
+                                             $('#edit-modal-form').modal('toggle');
+                                         } else {
+                                             $("#edit_error_msg span").text('Error Updating data try again later!');
+                                             $("#edit_loader").hide();
+                                             return false;
+                                         }
+                                     }); 
+                         }
         
+        }); 
+        }
+           
     }
     function setId(id){
         $('#record_id').val(id);
     }
-    function updatePassword() {
-        var password       = $('#edit_password').val();
-        var cpassword       = $('#edit_cpassword').val();
-            $(".loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/update",
-                    {
-                        id:id,
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        role_id: role,
-                        status: status
-                    }
-            )
-                    .done(function (data) {
-                        $("#edit_password_error_msg").hide();
-                        if (data == 'saved') {
-                                 successtoster('Password Updated!','Password updated successfully');
-                                $("#.loader").hide();
-                                $('#password-modal-form').modal('toggle');
-                        } else {
-                                errortoster('Error!','Error updating password try later!');
-                                $("#.loader").hide();
-                                $('#password-modal-form').modal('toggle');
-                                $("#.loader").hide();
-                            return false;
-                        }
-                    });
-
-        
-    }
-    function deleteUser(){
+    
+    function deleteCustomer(){
         var id       = $('#record_id').val();
             $(".loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/delete",{id:id})
+            $.post("<?php echo base_url(); ?>admin/customer/delete",{id:id})
                     .done(function (data) {
                         if (data == 'deleted') {
-                            errortoster('User Deleted!','User deleted successfully!');
+                            errortoster('Customer Deleted!','Customer deleted successfully!');
                             $('#delete-modal-form').modal('toggle');
                                $("#" + gridID).jqxGrid({source: getAdapter()});
+                        } else if(data == 'used'){
+                            errortoster('Can`t Delete!','Customer in use!');
+                            $('#delete-modal-form').modal('toggle');
                         } else {
-                            errortoster('Error!','Error deleting user!');
+                            errortoster('Error!','Error deleting customer!');
                             $('#delete-modal-form').modal('toggle');
                             return false;
                         }

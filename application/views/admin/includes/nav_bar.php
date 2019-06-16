@@ -27,7 +27,15 @@
                         <a href="<?php echo base_url().'admin/booking' ?>"><i class="fa fa-star"></i> <span class="nav-label">Booking</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url().'admin/day/listing' ?>"><i class="fa fa-money"></i> <span class="nav-label">Rokar</span></a>
+                        <a href="javascript:void(0);"><i class="fa fa-money"></i> <span class="nav-label">Transactions</span></a>
+                        <ul class="nav nav-second-level collapse">
+                        <li><a href="<?php echo base_url().'admin/day/listing' ?>">Daily</a></li>
+                        <li><a href="<?php echo base_url().'admin/day/daydetails' ?>">Today</a></li>
+                    </ul>
+                    </li>
+                    <li>
+                        <a href="<?php echo base_url().'admin/instalments/reveivepayment' ?>"><i class="fa fa-dollar"></i> <span class="nav-label">Payment</span> </a>
+                        
                     </li>
                     <li>
                         <a href="<?php echo base_url().'admin/property' ?>"><i class="fa fa-home"></i> <span class="nav-label">Property</span> </a>
