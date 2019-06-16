@@ -7,7 +7,13 @@ class Booking extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('booking_model');
+		$this->load->library('pdf');
     }
+
+    public function dwd()
+	{
+		echo "Dawood test";
+	}
 
     public function index() {
         $data = array();
@@ -251,7 +257,7 @@ class Booking extends CI_Controller {
                     'total_price' => number_format($row['total_price'],2),
                     'token_number' => $row['token_number'],
                     'total_instalments' => $row['total_instalments'],
-                    'actions' => '<a class="edit" href="'.base_url().'admin/booking/details/' . $row['sale_id'] .'"><i class="fa fa-eye"></i></a> '
+                    'actions' => '<a title="Edit Booking" class="edit" href="'.base_url().'admin/booking/details/' . $row['sale_id'] .'"><i class="fa fa-eye"></i></a><span> | </span><a title="Download Pdf" target="_blank" class="edit" href="'.base_url().'admin/booking/pdfDetails/' . $row['sale_id'] .'"><i class="fa fa-download"></i></a> '
                 );
             }
             $data[] = array(
@@ -324,6 +330,25 @@ class Booking extends CI_Controller {
         $data['content'] = "admin/booking/details";
         $this->load->view(ADMIN_BODY, $data);
     }
+
+    public function pdfDetails()
+	{
+		$sale_id = $this->uri->segment(4);
+		if($sale_id){
+			$sale = $this->booking_model->getSaleDetails($sale_id);
+
+			$data['sale'] = $sale;
+			$data['installments'] = $this->booking_model->getInstallments($sale_id);
+			$data['adv_installments'] = $this->booking_model->getAdvInstallments($sale_id);
+			$data['total_paid'] = $this->booking_model->getTotalPaidBySaleId($sale_id);
+			$data['total_adv_paid'] = $this->booking_model->getTotalAdvPaidBySaleId($sale_id);
+			$data['installmentsData'] = $this->booking_model->getInstallmentDataBySaleId($sale_id);
+		}
+		$this->pdf->loadHtml($this->load->view('mpdf',$data, TRUE));
+		$this->pdf->render();
+		$this->pdf->stream("Customer_booking_".$sale_id.".pdf", array("Attachment"=>0));
+	}
+
     public function get_installment_data() {
         $sale_id = $this->uri->segment(4);
         $data = array();

@@ -29,6 +29,10 @@ class Booking_model extends CI_Model {
         $query = $this->db->query("SELECT * FROM adv_instalments a, sale s, customers c,property p WHERE a.sale_id=s.sale_id AND s.property_id=p.property_id AND s.customer_id=c.customer_id AND a.adv_id=$adv_id");
         return $query->row();
     }
+	function getInstallmentDataBySaleId($sale_id){
+		$query = $this->db->query("SELECT * FROM instalments WHERE sale_id=$sale_id");
+		return $query->result();
+	}
     function getTotalPaidBySaleId($sale_id){
         $query = $this->db->query("SELECT IFNULL(SUM(instalment_amount),0) total_paid FROM instalments "
                 . "WHERE installment_status='Paid' "
