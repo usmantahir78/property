@@ -93,7 +93,7 @@ class Day extends CI_Controller {
                     'day_closedate' => date('d-m-Y',strtotime($row['day_closedate'])),
                     'day_status' => $row['day_status'],
                     
-                    'actions' => '<a class="edit" href="'.base_url().'admin/day/daydetails/' . $row['day_id'] .'"><i class="fa fa-eye"></i></a>'
+                    'actions' => '<a class="edit" href="'.base_url().'admin/day/daydetails/' . $row['day_id'] .'">View</a>'
                 );
             }
             $data[] = array(
