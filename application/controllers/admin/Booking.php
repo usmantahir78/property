@@ -147,13 +147,11 @@ class Booking extends CI_Controller {
                     $adv['sale_id'] = $sale_id;
                     $adv['adv_amount'] = $this->input->post('property_token');
                     $adv['adv_date'] = date('Y-m-d');
-                    $adv['adv_status'] = 'Paid';
-                    $adv['adv_receive_by'] = $this->session->userdata('user_id');
-                    $adv['adv_receive_date'] = date('Y-m-d');
-                    $adv['instalment_number'] = date('YmdHis');
+                    $adv['adv_status'] = 'Pending';
                     $adv['adv_paid_amount'] = $this->input->post('property_token');
                     
                     $this->common->save('adv_instalments', $adv);
+                    
                 }
                 
                 //////////// If advance have installments ////////////////////

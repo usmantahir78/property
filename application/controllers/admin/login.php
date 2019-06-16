@@ -33,6 +33,9 @@ class Login extends CI_Controller {
                 if($day){
                     $day = array( 'day_id' => $day->day_id,'day_status' => 'open' );
                     $this->session->set_userdata($day);
+                }else{
+                    $day = array( 'day_id' => '','day_status' => 'closed' );
+                    $this->session->set_userdata($day);
                 }
                 echo 'authrized';
                 }else if($login->status=='Inactive'){

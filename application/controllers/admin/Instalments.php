@@ -19,7 +19,9 @@ class Instalments extends CI_Controller {
 
     public function create() {
         $data = array();
-
+        if($this->session->userdata('day_id')=="") {
+            redirect(base_url() . 'admin/day/open');
+        }
         $installment_id = $this->uri->segment(4);
         if ($installment_id) {
             $installment = $this->booking_model->getInstallmentDetail($installment_id);
@@ -30,7 +32,7 @@ class Instalments extends CI_Controller {
         } else {
             redirect(base_url() . 'admin/booking');
         }
-
+        $data['settings'] = $this->common->fetch_row(false, 'settings', array('setting_id'=>1));
         $data['title'] = "Booking";
         $data['content'] = "admin/instalments/create";
         $this->load->view(ADMIN_BODY, $data);
@@ -38,20 +40,17 @@ class Instalments extends CI_Controller {
 
     public function reveiveadv() {
         $data = array();
-
+        if($this->session->userdata('day_id')=="") {
+            redirect(base_url() . 'admin/day/open');
+        }
         $adv_id = $this->uri->segment(4);
         if ($adv_id) {
             $installment = $this->booking_model->getAdvInstallmentById($adv_id);
-//            echo '<pre>';
-//            print_r($installment); exit;
-
             $data['advance'] = $installment;
-//                        echo "<pre>";
-//            print_r($data['installment']); exit;
         } else {
             redirect(base_url() . 'admin/booking');
         }
-
+        $data['settings'] = $this->common->fetch_row(false, 'settings', array('setting_id'=>1));
         $data['title'] = "Booking";
         $data['content'] = "admin/instalments/receive_adv";
         $this->load->view(ADMIN_BODY, $data);
@@ -63,7 +62,7 @@ class Instalments extends CI_Controller {
         if ($this->input->post('submit')) {
 
             $instalment['user_id'] = $this->session->userdata('user_id');
-            $instalment['instalment_number'] = $this->input->post('revcieving_number');
+            $instalment['instalment_number'] = $this->input->post('receiving_number');
             $instalment['property_number'] = $this->input->post('plot_no');
             $instalment['customer_id'] = $this->input->post('customer_id');
             $instalment['instalment_amount'] = $this->input->post('amount');
@@ -73,9 +72,24 @@ class Instalments extends CI_Controller {
             $instalment['amount_in_words'] = $this->input->post('in_words');
             $instalment['installment_status'] = 'Paid';
             $instalment['date_paid'] = date('Y-m-d');
+            $instalment['slip_number'] = $this->input->post('slip_number');
+            
             //  print_r($instalment); exit;
             $where = array('instalment_id' => $this->input->post('instalment_id'));
             if ($this->common->update('instalments', $instalment, $where)) {
+                $ledger = array();
+                $ledger['day_id'] = $this->session->userdata('day_id');
+                $ledger['user_id'] = $this->session->userdata('user_id');
+                $ledger['customer_id'] = $this->input->post('customer_id');
+                $ledger['type'] = 'debit';
+                $ledger['customer_type'] = 'customer';
+                $ledger['amount'] = $this->input->post('amount');
+                $ledger['vocher_number'] = $this->input->post('receiving_number');
+                $ledger['vocher_type'] = 'instalment';
+                $number_increament = floatval(str_replace('RV-', '', $this->input->post('receiving_number')));
+                $number_increament = $number_increament+1;
+                $this->common->update('settings', array('slip_number'=>  $number_increament),array('setting_id'=>1));
+                $this->common->ledgerentry($ledger);
                 redirect(base_url() . 'admin/booking/details/' . $this->input->post('sale_id'));
             }
         }
@@ -92,12 +106,27 @@ class Instalments extends CI_Controller {
             $instalment['adv_amount'] = $this->input->post('amount');
             $instalment['adv_status'] = 'Paid';
             $instalment['adv_receive_date'] = date('Y-m-d');
-            $instalment['instalment_number'] = $this->input->post('revcieving_number');
+            $instalment['instalment_number'] = $this->input->post('receiving_number');
             $instalment['instalment_description'] = $this->input->post('description');
             $instalment['adv_paid_amount'] = $this->input->post('amount');
+            $instalment['slip_number'] = $this->input->post('slip_number');
+            
 
             $where = array('adv_id' => $this->input->post('adv_id'));
             if ($this->common->update('adv_instalments', $instalment, $where)) {
+                        $ledger = array();
+                        $ledger['day_id'] = $this->session->userdata('day_id');
+                        $ledger['user_id'] = $this->session->userdata('user_id');
+                        $ledger['customer_id'] = $this->input->post('customer_id');
+                        $ledger['type'] = 'debit';
+                        $ledger['customer_type'] = 'customer';
+                        $ledger['amount'] = $this->input->post('amount');
+                        $ledger['vocher_number'] = $this->input->post('receiving_number');
+                        $ledger['vocher_type'] = 'advance';
+                        $number_increament = floatval(str_replace('ADV-', '', $this->input->post('receiving_number')));
+                        $number_increament = $number_increament+1;
+                        $this->common->update('settings', array('adv_number'=>  $number_increament),array('setting_id'=>1));
+                        $this->common->ledgerentry($ledger);
                 if($this->input->post('remaining')>0){
                     $instalment = array();
                     $instalment['property_id'] = $this->input->post('property_id');
@@ -191,5 +220,47 @@ class Instalments extends CI_Controller {
             echo 'not_found';
         }
     }
-
+    public function reveivepayment() {
+        $data = array();
+        if($this->session->userdata('day_id')=="") {
+            redirect(base_url() . 'admin/day/open');
+        }
+        $venders = $this->common->fetch(false,'venders');
+        $data['venders'] = $venders;
+        $data['settings'] = $this->common->fetch_row(false, 'settings', array('setting_id'=>1));
+      
+        $data['title'] = "Booking";
+        $data['content'] = "admin/receive_payment";
+        $this->load->view(ADMIN_BODY, $data);
+    }
+    public function savePayments() {
+        $payment = array();
+        $payment['user_id']         = $this->session->userdata('user_id');
+        $payment['day_id']          = $this->session->userdata('day_id');
+        $payment['slip_number']     = $this->input->post('slip_number');
+        $payment['vender_id']       = $this->input->post('vender_id');
+        $payment['r_p_number']      = $this->input->post('r_p_number');
+        $payment['amount']          = $this->input->post('amount');
+        $payment['description']     = $this->input->post('description');
+        $payment['vocher_number']   = $this->input->post('vocher_number');
+        $payment['payment_date']    = date('Y-m-d');
+        $payments                   = $this->common->save('payments', $payment);
+        if($payments){
+            $ledger = array();
+            $ledger['day_id'] = $this->session->userdata('day_id');
+            $ledger['user_id'] = $this->session->userdata('user_id');
+            $ledger['customer_id'] = $this->input->post('vender_id');
+            $ledger['type'] = 'credit';
+            $ledger['customer_type'] = 'vender';
+            $ledger['amount'] = $this->input->post('amount');
+            $ledger['vocher_number'] = $this->input->post('vocher_number');
+            $ledger['vocher_type'] = 'vender';
+            $number_increament = floatval(str_replace('VR-', '', $this->input->post('vocher_number')));
+            $number_increament = $number_increament+1;
+            $this->common->update('settings', array('vocher_number'=>  $number_increament),array('setting_id'=>1));
+            $this->common->ledgerentry($ledger);
+            redirect(base_url().'admin/day/open');
+        }
+    }
+    
 }

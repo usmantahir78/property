@@ -10,9 +10,9 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">Date</label>
+                            <label class="col-lg-3 col-form-label">Slip No</label>
                             <div class="col-lg-9">
-                                <input type="text" readonly value="<?php echo date('d-m-Y'); ?>" name="receive_date" placeholder="Date" class="form-control">
+                                <input type="text" placeholder="Slip Number" value="" name="slip_number" class="form-control" required>
                                 <input type="hidden" name="sale_id" value="<?php echo $advance->sale_id; ?>">
                                 <input type="hidden" name="customer_id" value="<?php echo $advance->customer_id; ?>">
                                 <input type="hidden" name="property_id" value="<?php echo $advance->property_id; ?>">
@@ -24,7 +24,7 @@
                     <div class="col-md-3">
                         <div class="form-group row">
                             <label class="col-lg-4 col-form-label">R.V No#</label>
-                            <div class="col-lg-8"><input type="text" placeholder="R.V No" readonly value="<?php echo date('YmdHis'); ?>" name="revcieving_number" class="form-control"></div>
+                            <div class="col-lg-8"><input type="text" placeholder="R.V No" readonly value="<?php echo $settings->adv_prefix.'-'.$settings->adv_number; ?>" name="receiving_number" class="form-control"></div>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -77,7 +77,7 @@
                     <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-lg-2 col-form-label">Remaining</label>
-                            <div class="col-lg-10"><input type="text" placeholder="Remaining" value="0" name="remaining" id="remaining_advance" class="form-control" onkeypress="return onlyNumber(event);"></div>
+                            <div class="col-lg-10"><input type="text" placeholder="Remaining" value="0" name="remaining" id="remaining_advance" class="form-control"></div>
                         </div>
                     </div>
                      <div class="col-md-6">

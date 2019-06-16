@@ -58,11 +58,15 @@
                             <div class="form-group">
                                 <label>Role</label> 
                                 <select class="form-control m-b" name="role" id="role" required="">
-                                    <?php if ($roles) {
-                                        foreach ($roles as $role) { ?>
+                                    <?php
+                                    if ($roles) {
+                                        foreach ($roles as $role) {
+                                            ?>
                                             <option value="<?php echo $role->role_id; ?>"><?php echo $role->role_name; ?></option>
-    <?php }
-} ?>
+                                        <?php
+                                        }
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -118,11 +122,15 @@
                             <div class="form-group">
                                 <label>Role</label> 
                                 <select class="form-control m-b" name="role" id="edit_role" required="">
-                                    <?php if ($roles) {
-                                        foreach ($roles as $role) { ?>
+                                    <?php
+                                    if ($roles) {
+                                        foreach ($roles as $role) {
+                                            ?>
                                             <option value="<?php echo $role->role_id; ?>"><?php echo $role->role_name; ?></option>
-    <?php }
-} ?>
+    <?php
+    }
+}
+?>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -146,26 +154,26 @@
         </div>
     </div>
 </div>
-<div id="edit-modal-form" class="modal fade" aria-hidden="true">
+<div id="password-modal-form" class="modal fade" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Edit User</h3>
-                        <div class="hide alert alert-danger alert-dismissable" id="edit_error_msg">
-                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <div class="col-sm-12"><h3 class="m-t-none m-b">Update Password</h3>
+                        <div class="hide alert alert-danger alert-dismissable" id="p_error_msg">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
                             <b>Alert! </b><span></span>
                         </div>
                         <form role="form">
                             <div class="form-group">
                                 <label>Password</label> 
-                                <input type="password" placeholder="Enter Password" class="form-control" name="password" id="password" required="">
+                                <input type="password" placeholder="Enter Password" class="form-control" name="password" id="edit_password" required>
                             </div>
                             <div class="form-group">
                                 <label>Confirm Password</label> 
-                                <input type="password" placeholder="Enter Confirm Password" class="form-control" name="cpassword" id="cpassword" required="">
+                                <input type="password" placeholder="Enter Confirm Password" class="form-control" name="cpassword" id="edit_cpassword" required>
                             </div>
-                            
+
                             <div>
                                 <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="button" onclick="updatePassword();">
                                     <strong>Update</strong>
@@ -194,7 +202,7 @@
                                 <button class="btn btn-danger m-t-n-xs" type="button" onclick="deleteUser();">
                                     <strong>Delete</strong>
                                 </button>
-                                
+
                             </div>
                         </form>
                     </div>
@@ -272,9 +280,9 @@
                 {text: 'User ID', datafield: 'user_id', filtertype: 'textbox', filtercondition: 'contains', cellsalign: 'center', width: 60},
                 {text: 'First Name', datafield: 'first_name', filtertype: 'textbox', filtercondition: 'contains'},
                 {text: 'Last Name', datafield: 'last_name', filtertype: 'textbox', filtercondition: 'contains'},
-                {text: 'Email', datafield: 'user_email',  filtertype: 'textbox', filtercondition: 'contains'},
-                {text: 'Status', datafield: 'status', filtertype: 'textbox', cellsalign: 'center',filtercondition: 'contains',width: 100},
-                {text: 'Actions', datafield: 'actions', cellsalign: 'center',filterable:false,width: 100}
+                {text: 'Email', datafield: 'user_email', filtertype: 'textbox', filtercondition: 'contains'},
+                {text: 'Status', datafield: 'status', filtertype: 'textbox', cellsalign: 'center', filtercondition: 'contains', width: 100},
+                {text: 'Actions', datafield: 'actions', cellsalign: 'center', filterable: false, width: 100}
             ]
         });
     });
@@ -288,143 +296,198 @@
         var cpassword = $('#cpassword').val();
         var role = $('#role').val();
         var status = $('#status').val();
-
-        if (password != cpassword) {
+        if (isRequired('fname', 'First name is required', true)) {
+            return false;
+        } else if (isRequired('lname', 'Last name is required', true)) {
+            return false;
+        } else if (isRequired('email', 'Email is required', true)) {
+            return false;
+        } else if (isRequired('password', 'Password is required', true)) {
+            return false;
+        } else if (isRequired('cpassword', 'Confirm is required', true)) {
+            return false;
+        } else if (password != cpassword) {
             $("#error_msg span").text('Confirm Password not matched');
             $("#error_msg").fadeIn(2000);
             return false;
         } else {
-            $("#loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/save",
-                    {
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        password: password,
-                        role_id: role,
-                        status: status
-                    }
-            )
-                    .done(function (data) {
-                        $("#error_msg").hide();
-                        if (data == 'saved') {
-                            successtoster('User Saved!','User saved successfully');
-                            $("#" + gridID).jqxGrid({source: getAdapter()});
-                            $("#loader").hide();
-                            $('#modal-form').modal('toggle');
-                        } else {
-                            $("#error_msg span").text('Error Saving data try again later!');
-                            $("#loader").hide();
-                            return false;
+            if (email) {
+                $.post("<?php echo base_url(); ?>admin/user/checkEmail",
+                        {
+                            user_email: email
                         }
-                    });
+                )
+                        .done(function (data) {
+                            $("#error_msg").hide();
+                            if (data == 'found') {
+                                $("#error_msg span").text('Email already exist!');
+                                $("#error_msg").fadeIn(2000);
+                                return false;
+                            } else {
+                                $("#loader").show();
+                                $.post("<?php echo base_url(); ?>admin/user/save",
+                                        {
+                                            first_name: fname,
+                                            last_name: lname,
+                                            user_email: email,
+                                            password: password,
+                                            role_id: role,
+                                            status: status
+                                        }
+                                )
+                                        .done(function (data) {
+                                            $("#error_msg").hide();
+                                            if (data == 'saved') {
+                                                successtoster('User Saved!', 'User saved successfully');
+                                                $("#" + gridID).jqxGrid({source: getAdapter()});
+                                                $("#loader").hide();
+                                                $('#modal-form').modal('toggle');
+                                            } else {
+                                                $("#error_msg span").text('Error Saving data try again later!');
+                                                $("#loader").hide();
+                                                return false;
+                                            }
+                                        });
+                            }
+                        });
+            }
+
 
         }
     }
-    
-    function getRecord(id){
+
+    function getRecord(id) {
         $('#edit_user_id').val(id);
         $.post("<?php echo base_url(); ?>admin/user/getRecord",
-                    {
-                        id:id
+                {
+                    id: id
+                }
+        )
+                .done(function (data) {
+                    if (data != 'not_found') {
+                        $('#edit_fname').val(data.first_name);
+                        $('#edit_lname').val(data.last_name);
+                        $('#edit_email').val(data.user_email);
+                        $('#edit_role').val(data.role_id);
+                        $('#edit_status').val(data.status);
+                    } else {
+                        errortoster('Error!', 'Data not found for this user.');
+                        $('#modal-form').modal('toggle');
                     }
-            )
-                    .done(function (data) {
-                        if (data !='not_found') {
-                            $('#edit_fname').val(data.first_name);
-                            $('#edit_lname').val(data.last_name);
-                            $('#edit_email').val(data.user_email);
-                            $('#edit_role').val(data.role_id);
-                            $('#edit_status').val(data.status);
-                        } else {
-                            errortoster('Error!','Data not found for this user.');
-                            $('#modal-form').modal('toggle');
-                        }
-                    });
+                });
     }
     /////////////////////////// Edit User ///////////////////////
     function updateForm() {
-        var fname       = $('#edit_fname').val();
-        var lname       = $('#edit_lname').val();
-        var email       = $('#edit_email').val();
-        var role        = $('#edit_role').val();
-        var status      = $('#edit_status').val();
-        var id          = $('#edit_user_id').val();
-            $("#edit_loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/update",
-                    {
-                        id:id,
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        role_id: role,
-                        status: status
-                    }
-            )
-                    .done(function (data) {
-                        $("#edit_error_msg").hide();
-                        if (data == 'saved') {
-                            successtoster('User Updated!','User updated successfully');
-                            $("#" + gridID).jqxGrid({source: getAdapter()});
-                            $("#edit_loader").hide();
-                            $('#edit-modal-form').modal('toggle');
-                        } else {
-                            $("#edit_error_msg span").text('Error Updating data try again later!');
-                            $("#edit_loader").hide();
-                            return false;
+        var fname = $('#edit_fname').val();
+        var lname = $('#edit_lname').val();
+        var email = $('#edit_email').val();
+        var role = $('#edit_role').val();
+        var status = $('#edit_status').val();
+        var id = $('#edit_user_id').val();
+        if (isRequired('edit_fname', 'First name is required', true)) {
+            return false;
+        } else if (isRequired('edit_lname', 'Last name is required', true)) {
+            return false;
+        } else if (isRequired('edit_email', 'Email is required', true)) {
+            return false;
+        } else {
+            $.post("<?php echo base_url(); ?>admin/user/checkEditEmail",
+                        {
+                            user_email: email,
+                            id:id
                         }
-                    });
+                )
+                        .done(function (data) {
+                            $("#error_msg").hide();
+                            if (data == 'found') {
+                                $("#edit_error_msg span").text('Email already exist!');
+                                $("#edit_error_msg").fadeIn(2000);
+                                return false;
+                            } else {
+                                $("#edit_loader").show();
+                $.post("<?php echo base_url(); ?>admin/user/update",
+                        {
+                            id: id,
+                            first_name: fname,
+                            last_name: lname,
+                            user_email: email,
+                            role_id: role,
+                            status: status
+                        }
+                )
+                        .done(function (data) {
+                            $("#edit_error_msg").hide();
+                            if (data == 'saved') {
+                                successtoster('User Updated!', 'User updated successfully');
+                                $("#" + gridID).jqxGrid({source: getAdapter()});
+                                $("#edit_loader").hide();
+                                $('#edit-modal-form').modal('toggle');
+                            } else {
+                                $("#edit_error_msg span").text('Error Updating data try again later!');
+                                $("#edit_loader").hide();
+                                return false;
+                            }
+                        });
+                            }
+                            });
+                
 
-        
+            }
     }
-    function setId(id){
+    function setId(id) {
         $('#record_id').val(id);
     }
     function updatePassword() {
-        var password       = $('#edit_password').val();
-        var cpassword       = $('#edit_cpassword').val();
+        var password = $('#edit_password').val();
+        var cpassword = $('#edit_cpassword').val();
+        var id = $('#edit_user_id').val();
+        if (isRequired('edit_password', 'Password is required', true)) {
+            return false;
+        } else if (isRequired('edit_cpassword', 'Confirm password is required', true)) {
+            return false;
+        } else if (password != cpassword) {
+            $("#p_error_msg span").text('Confirm Password not matched');
+            $("#p_error_msg").fadeIn(2000);
+            return false;
+        } else {
             $(".loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/update",
+            $.post("<?php echo base_url(); ?>admin/user/updatePassword",
                     {
-                        id:id,
-                        first_name: fname,
-                        last_name: lname,
-                        user_email: email,
-                        role_id: role,
-                        status: status
+                        id: id,
+                        password: password
                     }
             )
                     .done(function (data) {
-                        $("#edit_password_error_msg").hide();
+                        $("#p_error_msg").hide();
                         if (data == 'saved') {
-                                 successtoster('Password Updated!','Password updated successfully');
-                                $("#.loader").hide();
-                                $('#password-modal-form').modal('toggle');
+                            successtoster('Password Updated!', 'Password updated successfully');
+                            $(".loader").hide();
+                            $('#password-modal-form').modal('toggle');
                         } else {
-                                errortoster('Error!','Error updating password try later!');
-                                $("#.loader").hide();
-                                $('#password-modal-form').modal('toggle');
-                                $("#.loader").hide();
+                            errortoster('Error!', 'Error updating password try later!');
+                            $(".loader").hide();
+                            $('#password-modal-form').modal('toggle');
+                            $(".loader").hide();
                             return false;
                         }
                     });
+        }
 
-        
     }
-    function deleteUser(){
-        var id       = $('#record_id').val();
-            $(".loader").show();
-            $.post("<?php echo base_url(); ?>admin/user/delete",{id:id})
-                    .done(function (data) {
-                        if (data == 'deleted') {
-                            errortoster('User Deleted!','User deleted successfully!');
-                            $('#delete-modal-form').modal('toggle');
-                               $("#" + gridID).jqxGrid({source: getAdapter()});
-                        } else {
-                            errortoster('Error!','Error deleting user!');
-                            $('#delete-modal-form').modal('toggle');
-                            return false;
-                        }
-                    });
+    function deleteUser() {
+        var id = $('#record_id').val();
+        $(".loader").show();
+        $.post("<?php echo base_url(); ?>admin/user/delete", {id: id})
+                .done(function (data) {
+                    if (data == 'deleted') {
+                        errortoster('User Deleted!', 'User deleted successfully!');
+                        $('#delete-modal-form').modal('toggle');
+                        $("#" + gridID).jqxGrid({source: getAdapter()});
+                    } else {
+                        errortoster('Error!', 'Error deleting user!');
+                        $('#delete-modal-form').modal('toggle');
+                        return false;
+                    }
+                });
     }
 </script>

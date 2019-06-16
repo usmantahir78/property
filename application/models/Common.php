@@ -356,6 +356,17 @@ class Common extends CI_Model {
         $data['total_rows'] = $total_rows;
         return $data;
     }
+    public function ledgerentry($data) {
+        $this->db->insert('ledger', $data);
+        $insert_id = $this->db->insert_id();
+        if($insert_id){
+            return $insert_id;
+        
+        }else{
+            return false;
+            
+        }
+    }
 }
 
 ?>

@@ -27,7 +27,7 @@
                         <a href="<?php echo base_url().'admin/booking' ?>"><i class="fa fa-star"></i> <span class="nav-label">Booking</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url().'admin/instalments' ?>"><i class="fa fa-money"></i> <span class="nav-label">Rokar</span></a>
+                        <a href="<?php echo base_url().'admin/day/listing' ?>"><i class="fa fa-money"></i> <span class="nav-label">Rokar</span></a>
                     </li>
                     <li>
                         <a href="<?php echo base_url().'admin/property' ?>"><i class="fa fa-home"></i> <span class="nav-label">Property</span> </a>
