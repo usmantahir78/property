@@ -69,7 +69,7 @@ class User extends CI_Controller {
     public function get_data() {
         $data = array();
        $jqx_data = $this->common->get_jqx_data($_GET,'user_id','users.*','users');
-       $returnData = null;
+       $returnData = array();
        if($jqx_data){
            $delete = '';
            foreach ($jqx_data['resultData'] as $row){

@@ -20,38 +20,61 @@
                             GS
                         </div>
                     </li>
+                    <?php if(get_role_access($this->session->userdata('role_id'),1)) { ?>
                     <li>
                         <a href="<?php echo base_url().'admin/dashboard' ?>"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span></a>
                     </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),2)) { ?>
                     <li class="landing_link">
                         <a href="<?php echo base_url().'admin/booking' ?>"><i class="fa fa-star"></i> <span class="nav-label">Booking</span></a>
                     </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),3)) { ?>
                     <li>
-                        <a href="javascript:void(0);"><i class="fa fa-money"></i> <span class="nav-label">Transactions</span></a>
+                        <a href="javascript:void(0);"><i class="fa fa-money"></i> <span class="nav-label">Transactions</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
-                        <li><a href="<?php echo base_url().'admin/day/listing' ?>">Daily</a></li>
+                            <li><a href="<?php echo base_url().'admin/day/listing' ?>">Daily</a></li>
                         <li><a href="<?php echo base_url().'admin/day/daydetails' ?>">Today</a></li>
                     </ul>
                     </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),11)) { ?>
+                    <li>
+                        <a href="javascript:void(0);"><i class="fa fa-money"></i> <span class="nav-label">Reports</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="<?php echo base_url().'admin/customer/report' ?>">Customer Report</a></li>
+                        <li><a href="<?php echo base_url().'admin/vender/report' ?>">Vendor Report</a></li>
+                    </ul>
+                    </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),6)) { ?>
                     <li>
                         <a href="<?php echo base_url().'admin/instalments/reveivepayment' ?>"><i class="fa fa-dollar"></i> <span class="nav-label">Payment</span> </a>
                         
                     </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),7)) { ?>
                     <li>
                         <a href="<?php echo base_url().'admin/property' ?>"><i class="fa fa-home"></i> <span class="nav-label">Property</span> </a>
                         
                     </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),8)) { ?>
                     <li>
                         <a href="<?php echo base_url().'admin/user' ?>"><i class="fa fa-users"></i> <span class="nav-label">Users</span></a>
                     </li>
-                    
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),9)) { ?>
                     <li>
                         <a href="<?php echo base_url().'admin/customer' ?>"><i class="fa fa-users"></i> <span class="nav-label">Customers </span></a>
                     </li>
+                    <?php } ?>
+                    <?php if(get_role_access($this->session->userdata('role_id'),10)) { ?>
                     <li>
-                        <a href="<?php echo base_url().'admin/vender' ?>"><i class="fa fa-users"></i> <span class="nav-label">Venders </span></a>
+                        <a href="<?php echo base_url().'admin/vender' ?>"><i class="fa fa-users"></i> <span class="nav-label">Vendors </span></a>
                     </li>
-                    
+                    <?php } ?>
                     
                 </ul>
 

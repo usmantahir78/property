@@ -35,7 +35,62 @@ FROM instalments i,customers c WHERE i.instalment_number='$vocher_number'");
         $query = $this->db->query("SELECT SUM(amount) total_amount FROM ledger WHERE day_id=$day_id AND type='$type'");
         return $query->row();
     }
-    
+    function getDayCloseCash(){
+        $query = $this->db->query("SELECT day_close_amount FROM `dayopenclose` ORDER BY day_id DESC Limit 1");
+        return $query->row();
+    }
+    function getVenderReport($vender_id,$from_date,$to_date){
+        if($from_date!="" && $to_date==""){
+            $where = "WHERE l.date_created BETWEEN '".$from_date."' AND NOW()";
+        }
+        else if($to_date!="" && $from_date==""){
+            $where = "WHERE l.date_created <= '".$to_date."'";
+        }else if($to_date=="" && $from_date==""){
+            $where = "WHERE l.date_created <= NOW()";
+        }else if($to_date!="" && $from_date!=""){
+            $where = "WHERE l.date_created BETWEEN '".$from_date."' AND '".$to_date."'";
+        }
+        $query = $this->db->query("SELECT l.*,v.vender_first_name,v.vender_last_name,p.slip_number,p.r_p_number,p.description FROM `ledger` l 
+LEFT JOIN venders v ON v.vender_id=l.customer_id
+LEFT JOIN payments p ON p.vocher_number=l.vocher_number $where AND l.customer_type='vender' AND l.customer_id=$vender_id");
+        return $query->result();
+    }
+    function getCustomerAdvReport($customer_id,$from_date,$to_date,$property_id){
+        if($from_date!="" && $to_date==""){
+            $where = "WHERE l.date_created BETWEEN '".$from_date."' AND NOW()";
+        }
+        else if($to_date!="" && $from_date==""){
+            $where = "WHERE l.date_created <= '".$to_date."'";
+        }
+        else if($to_date=="" && $from_date==""){
+            $where = "WHERE l.date_created <= NOW()";
+        }else if($to_date!="" && $from_date!=""){
+            $where = "WHERE l.date_created BETWEEN '".$from_date."' AND '".$to_date."'";
+        }
+        $query = $this->db->query("SELECT l.*,c.customer_first_name,customer_last_name,adv.slip_number,adv.instalment_description FROM `ledger` l 
+LEFT JOIN adv_instalments adv ON adv.instalment_number=l.vocher_number
+LEFT JOIN customers c ON c.customer_id=l.customer_id
+$where AND l.customer_type='customer' and vocher_type='advance' AND adv.property_id=$property_id AND l.customer_id=$customer_id");
+        return $query->result();
+    }
+    function getCustomerInstalmentsReport($customer_id,$from_date,$to_date,$property_id){
+        if($from_date!="" && $to_date==""){
+            $where = "WHERE l.date_created BETWEEN '".$from_date."' AND NOW()";
+        }
+        else if($to_date!="" && $from_date==""){
+            $where = "WHERE l.date_created <= '".$to_date."'";
+        }
+        else if($to_date=="" && $from_date==""){
+            $where = "WHERE l.date_created <= NOW()";
+        }else if($to_date!="" && $from_date!=""){
+            $where = "WHERE l.date_created BETWEEN '".$from_date."' AND '".$to_date."'";
+        }
+        $query = $this->db->query("SELECT l.*,c.customer_first_name,customer_last_name,ins.slip_number,ins.instalment_description FROM `ledger` l 
+LEFT JOIN instalments ins ON l.vocher_number=ins.instalment_number
+LEFT JOIN customers c ON c.customer_id=l.customer_id
+$where AND l.customer_type='customer' and l.vocher_type='instalment' AND ins.property_id=$property_id AND l.customer_id=$customer_id");
+        return $query->result();
+    }
 }
 
 ?>

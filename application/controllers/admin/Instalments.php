@@ -19,6 +19,9 @@ class Instalments extends CI_Controller {
 
     public function create() {
         $data = array();
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
         if($this->session->userdata('day_id')=="") {
             redirect(base_url() . 'admin/day/open');
         }
@@ -39,6 +42,9 @@ class Instalments extends CI_Controller {
     }
 
     public function reveiveadv() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),5);
+        
         $data = array();
         if($this->session->userdata('day_id')=="") {
             redirect(base_url() . 'admin/day/open');
@@ -57,6 +63,8 @@ class Instalments extends CI_Controller {
     }
 
     public function save() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),5);
         $data = array();
         //print_r($this->input->post()); exit;
         if ($this->input->post('submit')) {
@@ -65,10 +73,10 @@ class Instalments extends CI_Controller {
             $instalment['instalment_number'] = $this->input->post('receiving_number');
             $instalment['property_number'] = $this->input->post('plot_no');
             $instalment['customer_id'] = $this->input->post('customer_id');
-            $instalment['instalment_amount'] = $this->input->post('amount');
+            $instalment['instalment_amount'] = (double)str_replace(",","",$this->input->post('amount'));
             $instalment['instalment_description'] = $this->input->post('description');
             $instalment['customer_name'] = $this->input->post('customer_first_name') . ' ' . $this->input->post('customer_last_name');
-            $instalment['total_amount'] = $this->input->post('total_payment');
+            $instalment['total_amount'] = (double)str_replace(",","",$this->input->post('total_payment'));
             $instalment['amount_in_words'] = $this->input->post('in_words');
             $instalment['installment_status'] = 'Paid';
             $instalment['date_paid'] = date('Y-m-d');
@@ -83,7 +91,7 @@ class Instalments extends CI_Controller {
                 $ledger['customer_id'] = $this->input->post('customer_id');
                 $ledger['type'] = 'debit';
                 $ledger['customer_type'] = 'customer';
-                $ledger['amount'] = $this->input->post('amount');
+                $ledger['amount'] = (double)str_replace(",","",$this->input->post('amount'));
                 $ledger['vocher_number'] = $this->input->post('receiving_number');
                 $ledger['vocher_type'] = 'instalment';
                 $number_increament = floatval(str_replace('RV-', '', $this->input->post('receiving_number')));
@@ -99,16 +107,15 @@ class Instalments extends CI_Controller {
         $data = array();
 
         if ($this->input->post('submit')) {
-
             $instalment['adv_receive_by'] = $this->session->userdata('user_id');
             $instalment['property_id'] = $this->input->post('property_id');
             $instalment['sale_id'] = $this->input->post('sale_id');
-            $instalment['adv_amount'] = $this->input->post('amount');
+            $instalment['adv_amount'] = (double)str_replace(",","",$this->input->post('amount'));
             $instalment['adv_status'] = 'Paid';
             $instalment['adv_receive_date'] = date('Y-m-d');
             $instalment['instalment_number'] = $this->input->post('receiving_number');
             $instalment['instalment_description'] = $this->input->post('description');
-            $instalment['adv_paid_amount'] = $this->input->post('amount');
+            $instalment['adv_paid_amount'] = (double)str_replace(",","",$this->input->post('amount'));
             $instalment['slip_number'] = $this->input->post('slip_number');
             
 
@@ -120,7 +127,7 @@ class Instalments extends CI_Controller {
                         $ledger['customer_id'] = $this->input->post('customer_id');
                         $ledger['type'] = 'debit';
                         $ledger['customer_type'] = 'customer';
-                        $ledger['amount'] = $this->input->post('amount');
+                        $ledger['amount'] = (double)str_replace(",","",$this->input->post('amount'));
                         $ledger['vocher_number'] = $this->input->post('receiving_number');
                         $ledger['vocher_type'] = 'advance';
                         $number_increament = floatval(str_replace('ADV-', '', $this->input->post('receiving_number')));
@@ -131,7 +138,7 @@ class Instalments extends CI_Controller {
                     $instalment = array();
                     $instalment['property_id'] = $this->input->post('property_id');
                     $instalment['sale_id'] = $this->input->post('sale_id');
-                    $instalment['adv_amount'] = $this->input->post('remaining');
+                    $instalment['adv_amount'] = (double)str_replace(",","",$this->input->post('remaining'));
                     $instalment['adv_status'] = 'Pending';
                     $instalment['adv_paid_amount'] = 0;
                     if($this->input->post('remaining_date')){
@@ -179,7 +186,7 @@ class Instalments extends CI_Controller {
     public function get_data() {
         $data = array();
         $jqx_data = $this->common->get_jqx_data($_GET, 'instalment_number', 'instalments.*', 'instalments');
-        $returnData = null;
+        $returnData = array();
         if ($jqx_data) {
             $delete = '';
             foreach ($jqx_data['resultData'] as $row) {
@@ -221,6 +228,9 @@ class Instalments extends CI_Controller {
         }
     }
     public function reveivepayment() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),6);
+        
         $data = array();
         if($this->session->userdata('day_id')=="") {
             redirect(base_url() . 'admin/day/open');
@@ -240,7 +250,7 @@ class Instalments extends CI_Controller {
         $payment['slip_number']     = $this->input->post('slip_number');
         $payment['vender_id']       = $this->input->post('vender_id');
         $payment['r_p_number']      = $this->input->post('r_p_number');
-        $payment['amount']          = $this->input->post('amount');
+        $payment['amount']          = (double)str_replace(",","",$this->input->post('amount'));
         $payment['description']     = $this->input->post('description');
         $payment['vocher_number']   = $this->input->post('vocher_number');
         $payment['payment_date']    = date('Y-m-d');
@@ -252,7 +262,7 @@ class Instalments extends CI_Controller {
             $ledger['customer_id'] = $this->input->post('vender_id');
             $ledger['type'] = 'credit';
             $ledger['customer_type'] = 'vender';
-            $ledger['amount'] = $this->input->post('amount');
+            $ledger['amount'] = (double)str_replace(",","",$this->input->post('amount'));
             $ledger['vocher_number'] = $this->input->post('vocher_number');
             $ledger['vocher_type'] = 'vender';
             $number_increament = floatval(str_replace('VR-', '', $this->input->post('vocher_number')));

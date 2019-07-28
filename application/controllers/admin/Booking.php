@@ -9,13 +9,11 @@ class Booking extends CI_Controller {
         $this->load->model('booking_model');
 		$this->load->library('pdf');
     }
-
-    public function dwd()
-	{
-		echo "Dawood test";
-	}
-
     public function index() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
         $data = array();
 
         //Fetch Roles
@@ -28,18 +26,26 @@ class Booking extends CI_Controller {
     }
 
     public function create() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
         $data = array();
 
         //Fetch Roles
         $where = array('role_status' => 'Active');
         $data['roles'] = $this->common->fetch_where('role_id,role_name', 'roles', $where);
-
+        $data['settings'] = $this->common->fetch_row(false, 'settings', array('setting_id'=>1));
         $data['title'] = "Booking";
         $data['content'] = "admin/booking/create";
         $this->load->view(ADMIN_BODY, $data);
     }
 
     public function save() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
         $data = array();
         $sale_id = '';
         
@@ -120,6 +126,9 @@ class Booking extends CI_Controller {
                 $sale['customer_image'] = $customer_image;
                 $sale['customer_file'] = $customer_file;
                 $sale_id = $this->common->save('sale', $sale);
+                $number_increament = floatval($this->input->post('token_no'));
+                $number_increament = $number_increament+1;
+                $this->common->update('settings', array('booking_number'=>  $number_increament),array('setting_id'=>1));
                 
                 $instalment = array();
                 $instalment_type = $this->input->post('instalment_type');
@@ -218,6 +227,10 @@ class Booking extends CI_Controller {
     }
 
     public function delete() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
         $data = array();
         $where = array('user_id' => $this->input->post('id'));
         if ($this->common->delete('users', $where)) {
@@ -228,6 +241,10 @@ class Booking extends CI_Controller {
     }
 
     public function update() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
         $data = array();
         $post_data['first_name'] = $this->input->post('first_name');
         $post_data['last_name'] = $this->input->post('last_name');
@@ -243,9 +260,13 @@ class Booking extends CI_Controller {
     }
 
     public function get_data() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
         $data = array();
         $jqx_data = $this->common->get_jqx_data($_GET, 'token_number', 'sale.*', 'sale');
-        $returnData = null;
+        $returnData = array();
         if ($jqx_data) {
             $delete = '';
             foreach ($jqx_data['resultData'] as $row) {
@@ -309,6 +330,10 @@ class Booking extends CI_Controller {
         }
     }
     public function details() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),2);
+        
+        
        //echo date('Y-m-d',strtotime('Wed May 01 2019 00:00:00 GMT+0500 (Pakistan Standard Time)')); exit;
         $data = array();
         $data['title'] = "Sale Details";
@@ -344,7 +369,7 @@ class Booking extends CI_Controller {
 			$data['total_adv_paid'] = $this->booking_model->getTotalAdvPaidBySaleId($sale_id);
 			$data['installmentsData'] = $this->booking_model->getInstallmentDataBySaleId($sale_id);
 		}
-		$this->pdf->loadHtml($this->load->view('mpdf',$data, TRUE));
+		$this->pdf->loadHtml($this->load->view('admin/reports/booking_report',$data, TRUE));
 		$this->pdf->render();
 		$this->pdf->stream("Customer_booking_".$sale_id.".pdf", array("Attachment"=>0));
 	}
@@ -353,7 +378,7 @@ class Booking extends CI_Controller {
         $sale_id = $this->uri->segment(4);
         $data = array();
         $jqx_data = $this->common->get_jqx_data_by_where($_GET, 'property_id', 'instalments.*', 'instalments','sale_id',$sale_id);
-        $returnData = null;
+        $returnData = array();
         if ($jqx_data) {
             $delete = '';
             foreach ($jqx_data['resultData'] as $row) {

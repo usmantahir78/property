@@ -6,6 +6,8 @@ class Vender extends CI_Controller {
 
     function __construct() {
         parent::__construct();
+        $this->load->model('day_model');
+        $this->load->library('pdf');
     }
 
     public function index() {
@@ -68,7 +70,7 @@ class Vender extends CI_Controller {
     public function get_data() {
         $data = array();
         $jqx_data = $this->common->get_jqx_data($_GET, 'vender_id', 'venders.*', 'venders');
-        $returnData = null;
+        $returnData = array();
         if ($jqx_data) {
             $delete = '';
             foreach ($jqx_data['resultData'] as $row) {
@@ -111,5 +113,38 @@ class Vender extends CI_Controller {
             echo 'not_found';
         }
     }
+    public function report() {
+        $data = array();
+        $where = array('vender_status' => 'Active');
+        $data['vendors'] = $this->common->fetch_where(false, 'venders', $where);
+        $data['title'] = "Vender Report";
+        $data['content'] = "admin/reports/vender_report";
+        $this->load->view(ADMIN_BODY, $data);
+    }
+    public function reportPDF() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),3);
+		if($this->uri->segment(4)!=""){
+			$day_id = $this->uri->segment(4);
+		}else if($this->session->userdata('day_id')){
+			$day_id = $this->session->userdata('day_id');
+		}
+		if($day_id==""){
+			redirect(base_url().'admin/vender');
+		}
+		$data = array();
+		$report = $this->day_model->getVenderReport($this->input->post('vendor'),$this->input->post('from_date'),$this->input->post('to_date'));
+		if($report){
+                $data['title'] = "Vender Details Pdf";
+		$data['report'] = $report;
+                $data['to_date'] = $this->input->post('to_date');
+                $data['from_date'] = $this->input->post('from_date');
+		$this->pdf->loadHtml($this->load->view('admin/reports/vender_pdf',$data, TRUE));
+		$this->pdf->render();
+		$this->pdf->stream("vender_pdf".$this->input->post('vendor').".pdf", array("Attachment"=>0));
+                }else{
+                    redirect(base_url().'admin/vender/report');
+                }
+	}
 
 }

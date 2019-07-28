@@ -3,10 +3,10 @@
     <div class="col-lg-12">
         <div class="ibox ">
             <div class="ibox-title">
-                <h5>Venders List </h5>
+                <h5>Vendors List </h5>
             </div>
             <div class="ibox-content">
-                <a data-toggle="modal" class="btn btn-primary btn-lg pull-right mb-2" href="#modal-form">Add Vender</a>
+                <a data-toggle="modal" class="btn btn-primary btn-lg pull-right mb-2" href="#modal-form">Add Vendor</a>
                 <br />
                 <div class="table-responsive">
                     <div id="jqxgrid"></div>
@@ -22,7 +22,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Add Vender</h3>
+                    <div class="col-sm-12"><h3 class="m-t-none m-b">Add Vendor</h3>
                         <div class="hide alert alert-danger alert-dismissable" id="error_msg">
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
                             <b>Alert! </b><span></span>
@@ -158,14 +158,14 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12"><h3 class="m-t-none m-b">Delete Vender</h3>
-                        <h4 class="m-t-none m-b">Are you sure you want to delete vender?</h4>
+                    <div class="col-sm-12"><h3 class="m-t-none m-b">Delete Vendor</h3>
+                        <h4 class="m-t-none m-b">Are you sure you want to delete ?</h4>
                         <form role="form">
                             <div class="pull-right">
                                 <button class="btn btn-info m-t-n-xs" type="button" data-dismiss="modal">
                                     <strong>Cancel</strong>
                                 </button>
-                                <button class="btn btn-danger m-t-n-xs" type="button" onclick="deleteVender();">
+                                <button class="btn btn-danger m-t-n-xs" type="button" onclick="deleteVendor();">
                                     <strong>Delete</strong>
                                 </button>
                                 
@@ -246,8 +246,8 @@
             },
             columns: [
                 {text: 'ID', datafield: 'vender_id', filtertype: 'textbox', filtercondition: 'contains', cellsalign: 'center', width: 60},
-                {text: 'Vender Name', datafield: 'vender_name', filtertype: 'textbox', filtercondition: 'contains'},
-                {text: 'Vender ID', datafield: 'vender_identity', filtertype: 'textbox', filtercondition: 'contains'},
+                {text: 'Vendor Name', datafield: 'vender_name', filtertype: 'textbox', filtercondition: 'contains'},
+                {text: 'Vendor ID', datafield: 'vender_identity', filtertype: 'textbox', filtercondition: 'contains'},
                 {text: 'Phone', datafield: 'vender_phone',  filtertype: 'textbox', filtercondition: 'contains'},
                 {text: 'Email', datafield: 'vender_email', filtertype: 'textbox', filtercondition: 'contains'},
                 {text: 'Address', datafield: 'vender_address', filtertype: 'textbox', filtercondition: 'contains',width:'20%'},
@@ -290,7 +290,7 @@
                     .done(function (data) {
                         $("#error_msg").hide();
                         if (data == 'saved') {
-                            successtoster('Vender Saved!','Vender saved successfully');
+                            successtoster('Vendor Saved!','Vendor saved successfully');
                             $("#" + gridID).jqxGrid({source: getAdapter()});
                             $("#loader").hide();
                             $('#modal-form').modal('toggle');
@@ -320,7 +320,7 @@
                             $('#edit_address').val(data.vender_address);
                             $('#edit_status').val(data.vender_status);
                         } else {
-                            errortoster('Error!','Data not found for this vender.');
+                            errortoster('Error!','Data not found for this .');
                             $('#modal-form').modal('toggle');
                         }
                     });
@@ -377,20 +377,20 @@
         $('#record_id').val(id);
     }
     
-    function deleteVender(){
+    function deleteVendor(){
         var id       = $('#record_id').val();
             $(".loader").show();
             $.post("<?php echo base_url(); ?>admin/vender/delete",{id:id})
                     .done(function (data) {
                         if (data == 'deleted') {
-                            errortoster('Vender Deleted!','Vender deleted successfully!');
+                            errortoster('Vendor Deleted!','Vendor deleted successfully!');
                             $('#delete-modal-form').modal('toggle');
                                $("#" + gridID).jqxGrid({source: getAdapter()});
                         } else if(data == 'used'){
-                            errortoster('Can`t Delete!','Vender in use!');
+                            errortoster('Can`t Delete!','Vendor in use!');
                             $('#delete-modal-form').modal('toggle');
                         } else {
-                            errortoster('Error!','Error deleting vender!');
+                            errortoster('Error!','Error deleting !');
                             $('#delete-modal-form').modal('toggle');
                             return false;
                         }

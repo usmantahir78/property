@@ -79,29 +79,27 @@ class Property extends CI_Controller {
 		$this->load->view(ADMIN_BODY, $data);
 	}
     public function update() {
-		$data = array();
-		if ($this->input->post('submit')) {
-
-			$property['property_number'] = $this->session->post('plot_no');
-			$property['property_in_marla'] = $this->input->post('property_in_marla');
-			$property['property_in_sarsahi'] = $this->input->post('property_in_sarsahi');
-			$property['property_per_marla'] = $this->input->post('property_per_marla');
-			$property['property_per_marla'] = $this->input->post('property_per_marla');
-			$property['property_per_marla'] = $this->input->post('property_per_marla');
-			$property['property_total_price'] = $this->input->post('property_total_price');
-			$property['property_status'] = $this->input->post('property_status');
-			$where = array('property_id' => $this->input->post('id'));
-			$property_id = $this->common->update('property', $property,$where);
-			if ($property_id) {
-				redirect(base_url().'admin/property/');
-			}
-		}
+    
+    if ($this->input->post('submit')) {
+            $property = array();
+            $property['property_number'] = $this->input->post('plot_no');
+            $property['property_in_marla'] = $this->input->post('property_in_marla');
+            $property['property_in_sarsahi'] = $this->input->post('property_in_sarsahi');
+            $property['property_per_marla'] = $this->input->post('property_per_marla');
+            $property['property_total_price'] = $this->input->post('property_total_price');
+            $property['property_status'] = $this->input->post('property_status');
+            $where = array('property_id' => $this->input->post('id'));
+            $property_id = $this->common->update('property', $property,$where);
+            if ($property_id) {
+                    redirect(base_url().'admin/property/');
+            }
+    }
     }
 
     public function get_data() {
         $data = array();
         $jqx_data = $this->common->get_jqx_data($_GET, 'property_id', 'property.*', 'property');
-        $returnData = null;
+        $returnData = array();
         if ($jqx_data) {
             $delete = '';
             foreach ($jqx_data['resultData'] as $row) {

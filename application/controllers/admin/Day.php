@@ -9,17 +9,17 @@ class Day extends CI_Controller {
         $this->load->model('day_model');
         $this->load->library('pdf');
     }
-
-    public function index() {
-        $data = array();
-
-        $data['title'] = "Booking";
-        $data['content'] = "admin/booking/booking";
-        $this->load->view(ADMIN_BODY, $data);
-    }
-
     public function open() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),4);
+        
+        
         $data = array();
+        if($this->day_model->getDayCloseCash()){
+        $data['close_cash'] = $this->day_model->getDayCloseCash()->day_close_amount;
+        }else{
+        $data['close_cash'] = 0.00;
+        }
         $data['title'] = "Day Open";
         $data['content'] = "admin/dayopenclose/open";
         if($this->session->userdata('day_id')){
@@ -28,10 +28,13 @@ class Day extends CI_Controller {
         $this->load->view(ADMIN_BODY, $data);
     }
     public function openday() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),4);
+        
         $day = array();
         $day['user_id']             = $this->session->userdata('user_id');
         $day['day_status']          = 'open';
-        $day['day_open_amount']     = $this->input->post('day_open_amount');
+        $day['day_open_amount']     = (double)str_replace(",","",$this->input->post('day_open_amount'));
         $day_id                     = $this->common->save('dayopenclose', $day);
         if($day_id){
             $day = array( 'day_id' => $day_id,'day_status' => 'open' );
@@ -40,6 +43,9 @@ class Day extends CI_Controller {
         }
     }
     public function daydetails() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),3);
+        $day_id = "";
         if($this->uri->segment(4)!=""){
             $day_id = $this->uri->segment(4);
         }else if($this->session->userdata('day_id')){
@@ -58,8 +64,10 @@ class Day extends CI_Controller {
         $data['content'] = "admin/dayopenclose/daydetails";
         $this->load->view(ADMIN_BODY, $data);
     }
-    public function dayDetailsPdf()
-	{
+    public function dayDetailsPdf() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),3);
+        
 		if($this->uri->segment(4)!=""){
 			$day_id = $this->uri->segment(4);
 		}else if($this->session->userdata('day_id')){
@@ -80,9 +88,12 @@ class Day extends CI_Controller {
 		$this->pdf->stream("Day_details_".$day_id.".pdf", array("Attachment"=>0));
 	}
     public function close() {
-         $data = array();
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),3);
+        
+        $data = array();
         $post_data['day_id'] = $this->session->userdata('day_id');
-        $post_data['day_close_amount'] = $this->input->post('closing_cash');
+        $post_data['day_close_amount'] = (double)str_replace(",","",$this->input->post('closing_cash'));
         $post_data['day_closedate'] = date('Y-m-d');
         $post_data['day_status'] = 'closed';
         $where = array('day_id' => $this->session->userdata('day_id'));
@@ -93,15 +104,21 @@ class Day extends CI_Controller {
         }
     }
     public function listing() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),3);
+        
         $data = array();
         $data['title'] = "Day Listings";
         $data['content'] = "admin/dayopenclose/listing";
         $this->load->view(ADMIN_BODY, $data);
     }
     public function get_data() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),3);
+        
         $data = array();
         $jqx_data = $this->common->get_jqx_data($_GET, 'day_id', 'dayopenclose.*', 'dayopenclose');
-        $returnData = null;
+        $returnData = array();
         if ($jqx_data) {
             $delete = '';
             foreach ($jqx_data['resultData'] as $row) {

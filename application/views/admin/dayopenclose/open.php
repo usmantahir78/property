@@ -12,7 +12,7 @@
                         <div class="col-md-12">
                             <div class="form-group row">
                                 <label class="col-lg-2 col-form-label">Amount</label>
-                                <div class="col-lg-10"><input type="text" placeholder="0.00" name="day_open_amount" id="day_open_amount" class="form-control"></div>
+                                <div class="col-lg-10"><input type="text" <?php if($close_cash!=0.00) { ?>readonly<?php } ?> placeholder="0.00" value="<?php echo number_format($close_cash,2); ?>" name="day_open_amount" id="day_open_amount" class="form-control"></div>
                             </div>
                         </div>
                     </div>

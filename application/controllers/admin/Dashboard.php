@@ -8,6 +8,8 @@ class Dashboard extends CI_Controller {
     }
 
     public function index() {
+        //Check access for this area
+        check_access($this->session->userdata('role_id'),1);
         $data = array();
         $data['title'] = "Dashboard";
         $data['content'] = "admin/dashboard";

@@ -18,7 +18,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-5 col-form-label">Token No#</label>
                                 <div class="col-lg-7">
-                                    <input type="text" placeholder="Token No" readonly value="<?php echo date('YmdHis'); ?>" name="token_no" class="form-control">
+                                    <input type="text" placeholder="Token No" readonly value="<?php echo $settings->booking_number; ?>" name="token_no" class="form-control">
                                 </div>
                             </div>
                         </div>
